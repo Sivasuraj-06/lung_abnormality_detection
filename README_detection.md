@@ -287,3 +287,10 @@ Bash
 
 streamlit run app.py
 This will launch the application in your local web browser, usually at http://localhost:8501.
+
+
+
+Snapshots of the application:
+![Streamlit_page-0001](https://github.com/user-attachments/assets/c6ede700-544e-4060-a28e-5e66f04b0531)
+
+
