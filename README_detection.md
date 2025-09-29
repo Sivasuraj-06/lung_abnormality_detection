@@ -70,6 +70,8 @@ streamlit run app.py
 
 Open your browser at http://localhost:8501
 
+Link for trained weights: https://drive.google.com/file/d/1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc/view?usp=drive_link
+
 
 Snapshots of the application:
 ![Streamlit_page-0001](https://github.com/user-attachments/assets/c6ede700-544e-4060-a28e-5e66f04b0531)
