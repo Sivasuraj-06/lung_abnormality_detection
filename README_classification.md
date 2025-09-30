@@ -62,6 +62,8 @@ Step Description 1-2 Setup environment, global config, seed 3 Multi-label target
 
 Download Model Weights: finalvinbigdataclassifier.pth
 
+The model weights (best.pt) are hosted on Google Drive and will be automatically downloaded by the Streamlit app.
+
 Save Deployment Script: app.py (Streamlit code including model class)
 
 Run Streamlit App:
