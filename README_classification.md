@@ -2,7 +2,7 @@ Chest X-Ray Abnormality Classification (EfficientNet)
 
 This project demonstrates a complete end-to-end pipeline for multi-label classification on chest X-ray images. Using the VinBigData Chest X-ray dataset, an EfficientNet-B0 model is trained to classify the presence of 14 different lung abnormalities. The trained model is deployed via a Streamlit web application with Grad-CAM explainability for interpretability.
 
-🚀 Project Overview
+Project Overview
 
 The goal is to accurately classify multiple thoracic abnormalities from a single chest X-ray image. The workflow includes:
 
