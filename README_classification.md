@@ -60,9 +60,9 @@ Notebook steps:
 
 Step Description 1-2 Setup environment, global config, seed 3 Multi-label target creation and Train/Val split 4-5 Dataset & DataLoader definition with augmentations 6 Define PyTorch Lightning model with EfficientNet-B0 7 Training with ModelCheckpoint, EarlyStopping 8 Save clean .pth weights (finalvinbigdataclassifier.pth) 9 Generate Grad-CAM visualizations Phase 2: Deployment (Local Machine)
 
-Download Model Weights: finalvinbigdataclassifier.pth
+Download Model Weights: best_classification.pth
 
-The model weights (best.pt) are hosted on Google Drive and will be automatically downloaded by the Streamlit app.
+The model weights (best_classification.pth) are hosted on Google Drive and will be automatically downloaded by the Streamlit app.
 
 Save Deployment Script: app.py (Streamlit code including model class)
 
