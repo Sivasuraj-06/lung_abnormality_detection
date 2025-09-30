@@ -62,6 +62,8 @@ Phase 2: Deployment (Local Machine)
 
 Download the trained weights (best.pt)
 
+The model weights (best.pt) are hosted on Google Drive and will be automatically downloaded by the Streamlit app.
+
 Save the deployment script as app.py
 
 Run the Streamlit app:
