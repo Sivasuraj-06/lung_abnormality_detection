@@ -3,7 +3,7 @@ Chest X-Ray Abnormality Detection (YOLOv8)
 
 This project demonstrates a complete end-to-end pipeline for object detection on chest X-ray images. Using the VinBigData Chest X-ray dataset, a YOLOv8 model is trained to detect 14 different lung abnormalities. The trained model is then deployed via a Streamlit web application for local inference.
 
-🚀 Project Overview
+Project Overview
 
 The project workflow includes:
 
