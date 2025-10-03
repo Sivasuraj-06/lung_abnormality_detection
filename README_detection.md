@@ -76,11 +76,12 @@ Link for trained weights: https://drive.google.com/file/d/1Tt7-qfGC8509TGZTMIT_c
 
 
 Snapshots of the application:
-![Streamlit_page-0001](https://github.com/user-attachments/assets/c6ede700-544e-4060-a28e-5e66f04b0531)
+![Streamlit_d_page-0001](https://github.com/user-attachments/assets/f7fe628e-54df-43bb-b4f0-34ac558c9188)
+![Streamlit_d_page-0002](https://github.com/user-attachments/assets/4adeba2c-89a9-4cf5-ba90-29194ef841bf)
+![Streamlit_d_page-0003](https://github.com/user-attachments/assets/650cfb56-23f5-4fce-8f84-51c1b5049190)
 
-![Streamlit_page-0002](https://github.com/user-attachments/assets/3fdd8783-1017-4738-a199-44a573767f42)
 
-![Streamlit_page-0003](https://github.com/user-attachments/assets/cbee392f-c4f6-49c0-8f40-711d3ed22108)
+
 
 
 
