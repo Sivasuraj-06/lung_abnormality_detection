@@ -138,7 +138,6 @@ def predict(model, device, image):
 # ------------------------------------------------------------------------------
 # 7. STREAMLIT WEB APP LAYOUT
 # ------------------------------------------------------------------------------
-st.set_page_config(page_title="Chest X-ray Classifier", page_icon="🩺", layout="wide")
 st.title("CliniScan:Lung-Abnormality Classification on Chest X‐rays using EfficientNet Model")
 st.markdown("Upload a chest X-ray image to get a prediction of potential findings.")
 
