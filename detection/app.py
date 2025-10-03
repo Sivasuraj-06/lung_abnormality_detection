@@ -36,7 +36,7 @@ class_names = [
 ]
 
 # --- Streamlit UI ---
-st.title("🩻 Chest X-Ray Abnormality Detection (YOLO)")
+st.title("Chest X-Ray Abnormality Detection (YOLO)")
 st.write("Upload a Chest X-ray image and the model will detect abnormalities.")
 
 # File uploader widget
