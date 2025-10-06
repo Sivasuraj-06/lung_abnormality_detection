@@ -33,14 +33,12 @@ Deployment: streamlit
 Installation
 
 Clone the repository
-git clone cd
 
-Install dependencies
-pip install pandas numpy scikit-learn matplotlib seaborn pip install torch torchvision pytorch-lightning efficientnet-pytorch grad-cam streamlit
+Install dependencies using requirements.txt
 
-Or using requirements.txt
 pip install -r requirements.txt
-⚙️ Usage
+
+Usage
 
 The project consists of two main phases:
 
@@ -72,7 +70,7 @@ streamlit run app.py
 
 Open your browser at http://localhost:8501
 
-⚡ Features
+Features
 
 Predicts 14 lung abnormalities from a single X-ray
 
