@@ -134,7 +134,7 @@ Then open your browser at:
 
 Link for trained weights: https://drive.google.com/file/d/1yW1qHFFwNO8BBxqoUCrFVBRrjwAqGDsJ/view?usp=drive_link
 
-Try the website here-> 
+Try the website here-> https://xvc6w4cs9cvjkepo5uftgq.streamlit.app
 
 Snapshots of the Application
 
