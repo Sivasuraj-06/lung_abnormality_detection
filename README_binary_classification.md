@@ -23,10 +23,9 @@ The primary goal is to accurately classify a single chest X-ray as either **Norm
 | **Model** | **ResNet-18** (Pre-trained on ImageNet) |
 | **Dataset** | VinBigData Chest X-ray (Binary Targets) |
 | **Task** | **Binary Image Classification** (Normal / Abnormal) |
-| **Training Env** | Kaggle / Colab (PyTorch) |
+| **Training Env** | Kaggle / Colab (PyTorch) / Local Machine|
 | **Deployment** | Streamlit (Local Host) |
-| **Explainability** | **Grad-CAM** |
-| **Image Size** | $224 \times 224$ pixels |
+
 
 
 
