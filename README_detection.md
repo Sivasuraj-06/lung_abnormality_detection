@@ -42,7 +42,7 @@ pip install ultralytics
 Install other dependencies
 pip install -r requirements.txt
 
-⚙️ Usage
+Usage
 
 The project consists of two main phases:
 
