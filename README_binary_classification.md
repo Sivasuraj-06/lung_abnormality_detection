@@ -132,7 +132,8 @@ Then open your browser at:
 👉 http://localhost:8501
 
 
+Link for trained weights: https://drive.google.com/file/d/1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc/view?usp=drive_link
 
-
+Try the website here-> 
 
 Snapshots of the Application
