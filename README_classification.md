@@ -73,7 +73,7 @@ The project consists of two main phases: Training and Deployment.
 ```bash
 streamlit run app.py
 ```
-Open your browser at: 👉 http://localhost:8501
+Open your browser at: http://localhost:8501
 
 **Deployment Features**
 Predicts 14 lung abnormalities from a single X-ray.
