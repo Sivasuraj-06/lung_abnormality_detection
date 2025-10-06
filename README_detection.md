@@ -74,7 +74,7 @@ Open your browser at http://localhost:8501
 
 Link for trained weights: https://drive.google.com/file/d/1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc/view?usp=drive_link
 
-URL:https://8dswaderpka4ehefeifmuw.streamlit.app
+Try the website here-> https://8dswaderpka4ehefeifmuw.streamlit.app
 
 
 Snapshots of the application:
