@@ -34,7 +34,6 @@ Utilities: os, shutil, glob, yaml, cv2
 Installation
 
 Clone the repository
-git clone cd
 
 Install main ML framework
 pip install ultralytics
