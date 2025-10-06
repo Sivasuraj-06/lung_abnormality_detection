@@ -4,7 +4,7 @@ This project demonstrates a complete end-to-end pipeline for binary classificati
 Using the VinBigData Chest X-ray dataset, a ResNet-18 model is trained to classify the presence of lung abnormalities (Abnormal vs. Normal).
 The trained model is deployed via a Streamlit web application with Grad-CAM explainability for interpretability.
 
-📘 Project Overview
+Project Overview
 
 The goal is to accurately classify a single chest X-ray as either Normal or Abnormal.
 The workflow includes:
@@ -17,7 +17,7 @@ Deployment via Streamlit
 
 Grad-CAM visualizations for clinical interpretability
 
-🔍 Feature Details
+Feature Details
 Feature	Description
 Model	ResNet-18 (Pre-trained on ImageNet)
 Dataset	VinBigData Chest X-ray
@@ -26,7 +26,7 @@ Training Env	Kaggle / Colab (PyTorch)
 Deployment	Streamlit (Local Host)
 Explainability	Grad-CAM
 Image Size	224×224 pixels
-🛠️ Technologies & Dependencies
+Technologies & Dependencies
 
 Python: 3.8+
 
@@ -42,13 +42,13 @@ Deployment: streamlit
 
 Installation
 
-1️⃣ Clone the repository
+Clone the repository
 
 git clone <your_repo_link>
 cd <repo_name>
 
 
-2️⃣ Install dependencies
+Install dependencies
 
 pip install torch torchvision albumentations opencv-python scikit-learn pillow streamlit
 
@@ -57,12 +57,12 @@ Or use the provided requirements file:
 
 pip install -r requirements.txt
 
-⚙️ Usage
+Usage
 
 The project consists of two main phases:
 
 Phase 1: Dataset Preparation & Model Training (Kaggle/Colab)
-📂 Step 1: Prepare Binary Dataset
+Step 1: Prepare Binary Dataset
 
 Script: prepare_binary_dataset.py
 
@@ -73,17 +73,8 @@ Balances both classes
 
 Splits into train/validation sets (80/20)
 
-Organizes images into:
 
-cls_dataset_binary/
-├── train/
-│    ├── normal/
-│    └── abnormal/
-└── val/
-     ├── normal/
-     └── abnormal/
-
-🧠 Step 2: Train the Model
+Step 2: Train the Model
 
 Script: train_binary_resnet.py
 
@@ -114,9 +105,9 @@ Example:
 [Save] Best model updated with F1-score: 0.91
 
 Phase 2: Deployment (Local Machine)
-💻 Step 1: Streamlit App
+Step 1: Streamlit App
 
-Script: app_resnet_binary.py
+Script: app.py
 
 Loads trained model weights (best_classification_model.pth)
 
@@ -140,23 +131,8 @@ streamlit run app_resnet_binary.py
 Then open your browser at:
 👉 http://localhost:8501
 
-⚡ Features
 
-Binary classification of chest X-rays (Normal vs. Abnormal)
 
-End-to-end training + deployment pipeline
 
-Grad-CAM visualizations highlight important regions influencing predictions
 
-Streamlit UI for simple clinical interpretability
-
-Early stopping ensures stable model convergence
-
-🔗 Model Weights
-
-Trained model file:
-best_classification_model.pth
-
-You can host it via Google Drive or GitHub Releases for automatic loading.
-
-📸 Snapshots of the Application
+Snapshots of the Application
