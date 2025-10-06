@@ -1,4 +1,4 @@
-# Chest X-Ray Abnormality Detection (YOLOv8) 🔍
+# Chest X-Ray Abnormality Detection (YOLOv8) �
 
 This project demonstrates a complete end-to-end pipeline for **object detection** on Chest X-ray (CXR) images. Using the **VinBigData Chest X-ray** dataset, a **YOLOv8n (Nano)** model is trained to detect and localize **14 different lung abnormalities** using bounding boxes.
 
@@ -76,7 +76,7 @@ The project consists of two main phases: Training and Deployment.
 streamlit run app.py
 ```
 
-Open your browser at: 👉 http://localhost:8501
+Open your browser at: http://localhost:8501
 
 **Deployment Features**
 Allows a user to upload a chest X-ray image.
