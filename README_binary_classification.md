@@ -44,10 +44,6 @@ Installation
 
 Clone the repository
 
-git clone <your_repo_link>
-cd <repo_name>
-
-
 Install dependencies
 
 pip install torch torchvision albumentations opencv-python scikit-learn pillow streamlit
