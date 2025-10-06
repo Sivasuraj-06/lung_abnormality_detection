@@ -1,12 +1,12 @@
 ## CliniScan: Advanced Chest X-ray Analysis with Deep Learning 
 
-This repository presents **CliniScan**, a collection of three distinct deep learning projects for analyzing **Chest X-ray (CXR)** images to detect and classify thoracic abnormalities. Each project utilizes a different state-of-the-art model and machine learning task to provide comprehensive diagnostic support, from pinpointing specific lesions to general abnormality screening.
+This repository presents **CliniScan**, a collection of three distinct deep learning projects for analyzing **Chest X-ray (CXR)** images to detect and classify lung abnormalities. Each project utilizes a different state-of-the-art model and machine learning task to provide comprehensive diagnostic support, from pinpointing specific lesions to general abnormality screening.
 
 
 
 ### Project Gist
 
-The projects leverage the **VinBigData Chest X-ray** dataset to demonstrate complete end-to-end pipelines: from data preprocessing and custom training environments (Kaggle/Colab) to practical deployment via interactive **Streamlit** web applications.
+The projects leverage the **VinBigData Chest X-ray** dataset to demonstrate complete end-to-end pipelines: from data preprocessing to practical deployment via interactive **Streamlit** web applications.
 
 ### Model Summaries & Live Demos
 
