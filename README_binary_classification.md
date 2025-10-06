@@ -86,6 +86,7 @@ The project consists of two main phases: Training and Deployment.
 ```bash
 streamlit run app_resnet_binary.py
 Open your browser at:  http://localhost:8501
+```
 
 
 
