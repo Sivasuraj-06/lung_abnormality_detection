@@ -84,6 +84,8 @@ Simple Streamlit UI for image upload and inference
 
 Link for trained weights: https://drive.google.com/file/d/1Mr4ojGw6djSPVBrPVFyiSDb0o9HHOji-/view?usp=drive_link
 
+Try the website here->https://jw4wwhcflkggkcbxv345zz.streamlit.app
+
 Snapshots of the application:
 ![Chest X-ray Classifier using EfficientNet Model_page-0001](https://github.com/user-attachments/assets/5012e8f1-58db-401c-982c-0357dd090efa)
 
