@@ -78,7 +78,7 @@ The project consists of two main phases: Training and Deployment.
 ### Phase 2: Deployment (Local Machine)
 
 **Step 1: Streamlit App Setup**
-* **Model Weights:** The trained weights (`best_classification_model.pth`) are available for download here: [Trained Weights Link](https://drive.google.com/file/d/1yW1qHFFwNO8BBxqoUCrFVBRrjwAqGDsJ/view?usp=drive_link)
+
 * **Deployment Script:** Save the deployment script as `app.py` or use the provided file (`app_resnet_binary.py`).
 
 **Step 2: Run the Application**
