@@ -68,6 +68,7 @@ The project consists of two main phases: Training and Deployment.
 
 **Step 1: Model Setup**
 **Model Weights:** Download the trained weights from the kaggle runtime.
+
 **Deployment Script:** Save the deployment script as `app.py`.
 
 **Step 2: Run the Application**
