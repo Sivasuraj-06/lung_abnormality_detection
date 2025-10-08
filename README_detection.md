@@ -67,8 +67,7 @@ The project consists of two main phases: Training and Deployment.
 ### Phase 2: Deployment (Local Machine)
 
 **Step 1: Model Setup**
-* **Download the trained weights:** The final model weights (`best.pt`) are hosted on Google Drive and will be automatically downloaded by the Streamlit app script upon first run.
-    * **Weights Link:** [Trained Weights Link](https://drive.google.com/file/d/1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc/view?usp=drive_link)
+
 * **Deployment Script:** Save the deployment script as `app.py`.
 
 **Step 2: Run the Application**
