@@ -66,7 +66,7 @@ The project consists of two main phases: Training and Deployment.
 
 **Step 1: Model Setup**
 
-**Model Weights:** Download the trained weights from the kaggle runtime.
+* **Model Weights:** Download the trained weights from the kaggle runtime.
 
 * **Deployment Script:** Ensure you have the Streamlit code saved as `app.py`.
 
