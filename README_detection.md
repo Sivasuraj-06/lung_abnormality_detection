@@ -25,7 +25,7 @@ The goal is to accurately locate and identify **14 specific lung abnormalities**
 | **Task** | **Object Detection** (Detecting 14 abnormalities) |
 | **Training Env** | Online IDE (Kaggle/Colab) |
 | **Deployment** | Streamlit (Local Host) |
-| **Image Size** | $640 \times 640$ pixels |
+| **Image Size** | $512 \times 512$ pixels |
 
 ---
 
