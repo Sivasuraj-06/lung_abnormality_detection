@@ -65,8 +65,7 @@ The project consists of two main phases: Training and Deployment.
 ### Phase 2: Deployment (Local Machine)
 
 **Step 1: Model Setup**
-* **Download Model Weights:** The weights (`best_classification.pth`) are hosted on Google Drive and will be automatically downloaded by the Streamlit app.
-    * **Weights Link:** [Trained Weights Link](https://drive.google.com/file/d/1Mr4ojGw6djSPVBrPVFyiSDb0o9HHOji-/view?usp=drive_link)
+
 * **Deployment Script:** Ensure you have the Streamlit code saved as `app.py`.
 
 **Step 2: Run the Application**
