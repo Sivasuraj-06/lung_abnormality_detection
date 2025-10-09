@@ -5,13 +5,13 @@ import os
 import streamlit as st
 from ultralytics import YOLO
 from PIL import Image
-import gdown  # <-- NEW for downloading model
+import gdown  # for downloading model
 
 # ------------------------------------------------------------------------------
 # Download model weights from Google Drive if not already present
 # ------------------------------------------------------------------------------
 MODEL_PATH = "best.pt"
-DRIVE_ID = "1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc"  # 👈 paste your Google Drive file ID
+DRIVE_ID = "1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc"  # paste your Google Drive file ID
 MODEL_URL = f"https://drive.google.com/uc?id={DRIVE_ID}"
 
 if not os.path.exists(MODEL_PATH):
@@ -68,4 +68,4 @@ if uploaded_file:
         st.write("### Confidence Scores")
         st.bar_chart(det_summary)
     else:
-        st.success("✅ No abnormalities detected")
+        st.success("No abnormalities detected")
