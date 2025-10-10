@@ -162,7 +162,7 @@ def predict(model, device, image):
 # Main Interface
 # ------------------------------------------------------------------------------
 st.markdown("## CliniScan: Lung-Abnormality Classification on Chest X-rays")
-uploaded_file = st.file_uploader("Upload a chest X-ray image", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Upload a Chest X-ray image to classify potential lung abnormalities and view their confidence scores.", type=["jpg", "jpeg", "png"])
 
 model, device = load_model()
 if model is None:
