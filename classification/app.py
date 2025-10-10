@@ -19,7 +19,8 @@ IMG_SIZE = 512
 N_CLASSES = 14
 MODEL_NAME = 'efficientnet-b0'
 MODEL_WEIGHTS_PATH = 'best_classification.pth'
-LOGO_PATH = "../assets/logo.jpg"
+BASE_DIR = os.path.dirname(os.path.dirname(__file__)) 
+LOGO_PATH = os.path.join(BASE_DIR, "assets", "logo.jpg")
 NORM_MEAN = [0.485, 0.456, 0.406]
 NORM_STD = [0.229, 0.224, 0.225]
 
