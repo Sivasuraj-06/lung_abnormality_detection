@@ -81,7 +81,7 @@ class_names = [
 # Main Interface
 # ------------------------------------------------------------------------------
 st.markdown("## CliniScan: Lung-Abnormality Detection on Chest X-rays")
-uploaded_file = st.file_uploader("Upload an image file", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Upload a Chest X-ray image to **detect and visualize lung abnormalities** in the scan.", type=["jpg", "jpeg", "png"])
 
 if uploaded_file:
     image = Image.open(uploaded_file).convert("RGB")
