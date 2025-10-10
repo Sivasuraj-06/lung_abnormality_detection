@@ -1,6 +1,7 @@
 # ==============================================================================
-# Streamlit Web Application (Deployment) - Chest X-ray Classifier (EfficientNet)
+# CliniScan: Lung-Abnormality Classification on Chest X-rays (EfficientNet)
 # ==============================================================================
+import os
 import streamlit as st
 import torch
 from efficientnet_pytorch import EfficientNet
@@ -8,19 +9,23 @@ from PIL import Image
 from torchvision import transforms
 import numpy as np
 import pandas as pd
-import gdown  # <-- NEW for downloading model from Google Drive
+import gdown
+import plotly.graph_objects as go
 
 # ------------------------------------------------------------------------------
-# 1. CONFIGURATION
+# Configuration
 # ------------------------------------------------------------------------------
 IMG_SIZE = 512
 N_CLASSES = 14
 MODEL_NAME = 'efficientnet-b0'
 MODEL_WEIGHTS_PATH = 'best_classification.pth'
+LOGO_PATH = "assets/logo.jpg"
 NORM_MEAN = [0.485, 0.456, 0.406]
 NORM_STD = [0.229, 0.224, 0.225]
 
-# Mapping from class index to human-readable class names
+DRIVE_ID = '1Mr4ojGw6djSPVBrPVFyiSDb0o9HHOji-'
+MODEL_URL = f"https://drive.google.com/uc?id={DRIVE_ID}"
+
 idx_to_class = {
     0: 'Aortic enlargement', 
     1: 'Cardiomegaly', 
@@ -39,12 +44,48 @@ idx_to_class = {
 }
 
 # ------------------------------------------------------------------------------
-# 2. MODEL ARCHITECTURE
+# Page Setup
+# ------------------------------------------------------------------------------
+st.set_page_config(
+    page_title="CliniScan: Lung-Abnormality Classification",
+    layout="centered",
+    initial_sidebar_state="auto"
+)
+
+# ------------------------------------------------------------------------------
+# Sidebar
+# ------------------------------------------------------------------------------
+with st.sidebar:
+    st.image(LOGO_PATH, use_container_width=True)
+    st.markdown("### Confidence Threshold")
+    confidence_threshold = st.slider("Select minimum confidence", 0.0, 1.0, 0.5, 0.05)
+    st.markdown("---")
+    st.markdown("#### About the Model")
+    st.info("""
+    This application uses an EfficientNet-B0 classification model trained to identify 14 types of lung abnormalities from chest X-ray images.
+
+    Model architecture: EfficientNet-B0  
+    Framework: PyTorch  
+    """)
+    st.markdown("---")
+    st.markdown("#### Disclaimer")
+    st.warning("""
+    This tool is intended for educational and research purposes only.  
+    It is not a substitute for professional medical advice, diagnosis, or treatment.  
+    Always consult a qualified healthcare provider for clinical decisions.
+    """)
+
+# ------------------------------------------------------------------------------
+# Download Model if Not Present
+# ------------------------------------------------------------------------------
+if not os.path.exists(MODEL_WEIGHTS_PATH):
+    with st.spinner("Downloading model weights..."):
+        gdown.download(MODEL_URL, MODEL_WEIGHTS_PATH, quiet=False)
+
+# ------------------------------------------------------------------------------
+# Model Architecture
 # ------------------------------------------------------------------------------
 class VinBigDataClassifier(torch.nn.Module):
-    """
-    EfficientNet-based classifier for chest X-ray abnormalities.
-    """
     def __init__(self, n_classes, model_name):
         super().__init__()
         self.model = EfficientNet.from_pretrained(model_name)
@@ -55,23 +96,10 @@ class VinBigDataClassifier(torch.nn.Module):
         return self.model(x)
 
 # ------------------------------------------------------------------------------
-# 3. DOWNLOAD MODEL FROM GOOGLE DRIVE
-# ------------------------------------------------------------------------------
-DRIVE_ID = '1Mr4ojGw6djSPVBrPVFyiSDb0o9HHOji-'  # 👈 Google Drive file ID
-MODEL_URL = f"https://drive.google.com/uc?id={DRIVE_ID}"
-
-with st.spinner("Downloading model from Google Drive... ⏳"):
-    gdown.download(MODEL_URL, MODEL_WEIGHTS_PATH, quiet=False)
-
-# ------------------------------------------------------------------------------
-# 4. LOAD MODEL FUNCTION
+# Load Model
 # ------------------------------------------------------------------------------
 @st.cache_resource
 def load_model():
-    """
-    Loads the EfficientNet model with pretrained weights.
-    Handles possible key mismatches in state_dict.
-    """
     model = VinBigDataClassifier(n_classes=N_CLASSES, model_name=MODEL_NAME)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
@@ -79,15 +107,12 @@ def load_model():
     try:
         checkpoint = torch.load(MODEL_WEIGHTS_PATH, map_location=device)
         state_dict = checkpoint.get('state_dict', checkpoint)
-        
-        # Handle key prefix issues
         new_state_dict = {}
         for k, v in state_dict.items():
             if not k.startswith('model.'):
                 new_state_dict['model.' + k] = v
             else:
                 new_state_dict[k] = v
-        
         model.load_state_dict(new_state_dict)
     except Exception as e:
         st.error(f"Error loading model: {e}")
@@ -97,33 +122,27 @@ def load_model():
     return model, device
 
 # ------------------------------------------------------------------------------
-# 5. IMAGE PREPROCESSING
+# Image Preprocessing
 # ------------------------------------------------------------------------------
 @st.cache_data
 def preprocess_image(image):
-    """
-    Applies necessary transforms to the input image.
-    """
-    inference_transforms = transforms.Compose([
+    transforms_pipeline = transforms.Compose([
         transforms.Resize((IMG_SIZE, IMG_SIZE)),
         transforms.ToTensor(),
         transforms.Normalize(mean=NORM_MEAN, std=NORM_STD),
     ])
-    return inference_transforms(image).unsqueeze(0)
+    return transforms_pipeline(image).unsqueeze(0)
 
 # ------------------------------------------------------------------------------
-# 6. PREDICTION FUNCTION
+# Prediction Function
 # ------------------------------------------------------------------------------
 def predict(model, device, image):
-    """
-    Performs inference and returns predicted classes and probabilities.
-    """
     img_tensor = preprocess_image(image).to(device)
     with torch.no_grad():
         logits = model(img_tensor)
         probabilities = torch.sigmoid(logits).squeeze().cpu().numpy()
     
-    predicted_indices = np.where(probabilities > 0.5)[0]
+    predicted_indices = np.where(probabilities > confidence_threshold)[0]
     results = []
 
     if len(predicted_indices) == 0:
@@ -136,40 +155,54 @@ def predict(model, device, image):
     return results, probabilities
 
 # ------------------------------------------------------------------------------
-# 7. STREAMLIT WEB APP LAYOUT
+# Main Interface
 # ------------------------------------------------------------------------------
-st.title("CliniScan:Lung-Abnormality Classification on Chest X‐rays using EfficientNet Model")
-st.markdown("Upload a chest X-ray image to get a prediction of potential findings.")
+st.markdown("## CliniScan: Lung-Abnormality Classification on Chest X-rays")
+uploaded_file = st.file_uploader("Upload a chest X-ray image", type=["jpg", "jpeg", "png"])
 
-# Load model
 model, device = load_model()
 if model is None:
     st.stop()
 
-# File uploader widget
-uploaded_file = st.file_uploader("Choose a PNG, JPG, or JPEG file", type=["png", "jpg", "jpeg"])
-
 if uploaded_file:
     image = Image.open(uploaded_file).convert("RGB")
-    col1, col2 = st.columns(2)
+    st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    with col1:
-        st.subheader("Uploaded X-ray")
-        st.image(image, use_column_width=True)
+    st.subheader("Prediction Results")
+    results, probabilities = predict(model, device, image)
 
-    with col2:
-        st.subheader("Prediction Results")
-        results, probabilities = predict(model, device, image)
-        st.success("Analysis Complete!")
+    for res in results:
+        st.write(f"- {res}")
 
-        st.markdown("### Predicted Findings:")
-        for res in results:
-            st.write(f"- {res}")
+    # Prepare DataFrame for Plotly bar chart
+    prob_df = pd.DataFrame({
+        "Abnormality": list(idx_to_class.values()),
+        "Confidence": probabilities
+    }).sort_values("Confidence", ascending=True)  # horizontal chart, smallest at bottom
 
-        st.markdown("---")
-        st.markdown("### All Findings (with Confidence Scores):")
-        prob_df = pd.DataFrame({
-            'Class': list(idx_to_class.values()),
-            'Confidence': probabilities,
-        }).sort_values('Confidence', ascending=False)
-        st.bar_chart(prob_df, x='Class', y='Confidence')
+    # Plotly horizontal bar chart
+    fig = go.Figure(go.Bar(
+        x=prob_df["Confidence"],
+        y=prob_df["Abnormality"],
+        orientation='h',
+        marker=dict(
+            color=prob_df["Confidence"],
+            colorscale='YlGnBu',
+            line=dict(color='rgba(0,0,0,0.6)', width=1)
+        ),
+        hovertemplate='<b>%{y}</b><br>Confidence: %{x:.3f}<extra></extra>'
+    ))
+
+    fig.update_layout(
+        title="Confidence Scores by Abnormality",
+        xaxis_title="Confidence",
+        yaxis_title="Abnormality",
+        template="plotly_white",
+        height=500,
+        margin=dict(l=150, r=40, t=60, b=40),
+        font=dict(family="Helvetica", size=12, color="#212529"),
+        xaxis=dict(gridcolor='rgba(0,0,0,0.1)', zerolinecolor='rgba(0,0,0,0.2)'),
+        yaxis=dict(gridcolor='rgba(0,0,0,0.1)')
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
