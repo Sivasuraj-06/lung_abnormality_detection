@@ -15,7 +15,7 @@ import pandas as pd
 MODEL_PATH = "best.pt"
 DRIVE_ID = "1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc"
 MODEL_URL = f"https://drive.google.com/uc?id={DRIVE_ID}"
-LOGO_PATH = "assets/logo.jpg"  # Replace with your actual logo path
+LOGO_PATH = "../assets/logo.jpg"  # Replace with your actual logo path
 
 # ------------------------------------------------------------------------------
 # Page Setup
