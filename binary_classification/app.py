@@ -49,8 +49,10 @@ with st.sidebar:
     st.info("""
     This tool uses a **ResNet-18** deep learning model trained on chest X-ray images 
     to classify them as **Normal** or **Abnormal**.
+    
 
     Model: ResNet-18  
+    
     Framework: PyTorch  
     """)
     st.markdown("---")
