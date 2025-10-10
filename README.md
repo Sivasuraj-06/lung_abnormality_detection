@@ -12,9 +12,9 @@ The projects leverage the **VinBigData Chest X-ray** dataset to demonstrate comp
 
 | Project Name | ML Task | Model | Output | Explainability | Live App Link |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Abnormality Detection** | Object Detection | **YOLOv8n** | Bounding boxes for 14 specific abnormalities | Bounding Boxes | [Try the App](https://8dswaderpka4ehefeifmuw.streamlit.app) |
-| **Abnormality Classification** | Multi-Label Classification | **EfficientNet-B0** | Confidence scores for presence of 14 abnormalities | Grad-CAM | [Try the App](https://jw4wwhcflkggkcbxv345zz.streamlit.app) |
-| **Binary Classification (CliniScan)** | Binary Classification | **ResNet-18** | Predicts: **Normal** vs. **Abnormal** | Grad-CAM | [Try the App](https://xvc6w4cs9cvjkepo5uftgq.streamlit.app) |
+| **Abnormality Detection** | Object Detection | **YOLOv8n** | Bounding boxes for 14 specific abnormalities | Bounding Boxes | [Try the App](https://vimedhpbqdfx8fp59ynu3y.streamlit.app) |
+| **Abnormality Classification** | Multi-Label Classification | **EfficientNet-B0** | Confidence scores for presence of 14 abnormalities | Grad-CAM | [Try the App](https://xdhu4se4zcpsgxg2aj82s6.streamlit.app) |
+| **Binary Classification (CliniScan)** | Binary Classification | **ResNet-18** | Predicts: **Normal** vs. **Abnormal** | Grad-CAM | [Try the App](https://fcc2y5jgqqbry5suwaiyur.streamlit.app) |
 
 
 
