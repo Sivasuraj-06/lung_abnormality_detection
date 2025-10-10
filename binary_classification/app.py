@@ -17,7 +17,7 @@ import plotly.graph_objects as go
 # Page Setup
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="CliniScan",
+    page_title="CliniScan-RN18",
     layout="centered",
     initial_sidebar_state="auto"
 )
@@ -155,7 +155,7 @@ def predict(model, image):
 # ------------------------------------------------------------------------------
 # Main Interface
 # ------------------------------------------------------------------------------
-st.markdown("## CliniScan: Lung-Abnormality Classification ")
+st.markdown("## CliniScan: Lung-Abnormality Classification on Chest X-rays")
 st.write("Upload a Chest X-ray image to classify it as **Normal** or **Abnormal**.")
 
 uploaded_file = st.file_uploader("Upload an image file", type=["jpg", "jpeg", "png"])
