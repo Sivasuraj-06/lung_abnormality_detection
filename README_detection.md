@@ -90,9 +90,14 @@ Displays the image with predicted bounding boxes and corresponding abnormality l
 
 
 **Snapshots of the application:**
-![Streamlit_d_page-0001](https://github.com/user-attachments/assets/f7fe628e-54df-43bb-b4f0-34ac558c9188)
-![Streamlit_d_page-0002](https://github.com/user-attachments/assets/4adeba2c-89a9-4cf5-ba90-29194ef841bf)
-![Streamlit_d_page-0003](https://github.com/user-attachments/assets/650cfb56-23f5-4fce-8f84-51c1b5049190)
+![CliniScan-YOLOv8_page-0001](https://github.com/user-attachments/assets/88ab5ba5-0ccb-4ec5-af0b-917c70f48bcf)
+
+![CliniScan-YOLOv8_page-0002](https://github.com/user-attachments/assets/b373281b-0a37-4a0e-89b9-1c4080052335)
+
+![CliniScan-YOLOv8_page-0003](https://github.com/user-attachments/assets/f073d84a-62f8-4e6a-8001-d89549657b8f)
+
+
+
 
 
 
