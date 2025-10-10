@@ -48,7 +48,7 @@ idx_to_class = {
 # Page Setup
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="CliniScan",
+    page_title="CliniScan-ENB0",
     layout="centered",
     initial_sidebar_state="auto"
 )
