@@ -86,5 +86,9 @@ Grad-CAM visualizations highlight important image regions contributing to the cl
 Simple Streamlit UI for easy image upload and inference.
 
 **Snapshots of the application:**
-![Chest X-ray Classifier using EfficientNet Model_page-0001](https://github.com/user-attachments/assets/5012e8f1-58db-401c-982c-0357dd090efa)
+![CliniScan-ENB0_page-0001](https://github.com/user-attachments/assets/102a42b2-b326-496a-bcb9-1a8cbd2a4ad4)
+
+![CliniScan-ENB0_page-0002](https://github.com/user-attachments/assets/246568c1-7d90-48c1-9f34-ed3dea1d6ff8)
+
+
 
