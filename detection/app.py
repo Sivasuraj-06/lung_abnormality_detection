@@ -22,7 +22,7 @@ LOGO_PATH = os.path.join(BASE_DIR, "assets", "logo.jpg")
 # Page Setup
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="CliniScan",
+    page_title="CliniScan-YOLOv8",
     layout="centered",
     initial_sidebar_state="auto"
 )
