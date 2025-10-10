@@ -28,7 +28,8 @@ st.set_page_config(
 MODEL_PATH = "best_classification_model.pth"
 DRIVE_ID = "1yW1qHFFwNO8BBxqoUCrFVBRrjwAqGDsJ"
 MODEL_URL = f"https://drive.google.com/uc?id={DRIVE_ID}"
-LOGO_PATH = "../assets/logo.jpg"
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))  
+LOGO_PATH = os.path.join(BASE_DIR, "assets", "logo.jpg")
 
 CLASS_NAMES = ["Abnormal", "Normal"]
 IMG_SIZE = 224
