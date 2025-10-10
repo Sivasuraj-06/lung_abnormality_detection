@@ -1,5 +1,5 @@
 # ==============================================================================
-# Streamlit Web Application (Deployment) - CliniScan (ResNet)
+# CliniScan: Lung-Abnormality Classification on Chest X-rays (ResNet-18)
 # ==============================================================================
 import os
 import streamlit as st
@@ -8,27 +8,72 @@ import torch.nn as nn
 from torchvision import transforms, models
 from PIL import Image
 import numpy as np
+import pandas as pd
 import cv2
-import gdown  # <-- for Google Drive download
+import gdown
+import plotly.graph_objects as go
 
 # ------------------------------------------------------------------------------
-# Download model weights from Google Drive if not already present
+# Page Setup
+# ------------------------------------------------------------------------------
+st.set_page_config(
+    page_title="CliniScan: Lung-Abnormality Classification",
+    layout="centered",
+    initial_sidebar_state="auto"
+)
+
+# ------------------------------------------------------------------------------
+# Configuration
 # ------------------------------------------------------------------------------
 MODEL_PATH = "best_classification_model.pth"
-DRIVE_ID = "1yW1qHFFwNO8BBxqoUCrFVBRrjwAqGDsJ" 
+DRIVE_ID = "1yW1qHFFwNO8BBxqoUCrFVBRrjwAqGDsJ"
 MODEL_URL = f"https://drive.google.com/uc?id={DRIVE_ID}"
+LOGO_PATH = "assets/logo.jpg"
 
+CLASS_NAMES = ["Abnormal", "Normal"]
+IMG_SIZE = 224
+NORM_MEAN = [0.485, 0.456, 0.406]
+NORM_STD = [0.229, 0.224, 0.225]
+
+# ------------------------------------------------------------------------------
+# Sidebar
+# ------------------------------------------------------------------------------
+with st.sidebar:
+    if os.path.exists(LOGO_PATH):
+        st.image(LOGO_PATH, use_container_width=True)
+    st.markdown("### Confidence Threshold")
+    confidence_threshold = st.slider("Select minimum confidence", 0.0, 1.0, 0.5, 0.05)
+    st.markdown("---")
+    st.markdown("#### About the Model")
+    st.info("""
+    This tool uses a **ResNet-18** deep learning model trained on chest X-ray images 
+    to classify them as **Normal** or **Abnormal**.
+
+    Model: ResNet-18  
+    Framework: PyTorch  
+    """)
+    st.markdown("---")
+    st.markdown("#### Disclaimer")
+    st.warning("""
+    This application is for **educational and research** purposes only.  
+    It is **not** a substitute for professional medical advice, diagnosis, or treatment.  
+    Always consult a qualified healthcare provider for medical decisions.
+    """)
+
+# ------------------------------------------------------------------------------
+# Download Model Weights
+# ------------------------------------------------------------------------------
 if not os.path.exists(MODEL_PATH):
-    with st.spinner("Downloading model... Please wait ⏳"):
+    with st.spinner("Downloading model..."):
         gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
 
 # ------------------------------------------------------------------------------
-# Load model (cached for performance)
+# Load Model
 # ------------------------------------------------------------------------------
 @st.cache_resource
 def load_model():
     model = models.resnet18(pretrained=False)
-    model.fc = nn.Linear(model.fc.in_features, 2)  # 2 classes: abnormal, normal
+    model.fc = nn.Linear(model.fc.in_features, len(CLASS_NAMES))
     model.load_state_dict(torch.load(MODEL_PATH, map_location="cpu"))
     model.eval()
     return model
@@ -36,20 +81,21 @@ def load_model():
 model = load_model()
 
 # ------------------------------------------------------------------------------
-# Image transformation
+# Image Preprocessing
 # ------------------------------------------------------------------------------
-transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406],
-                         [0.229, 0.224, 0.225])
-])
+@st.cache_data
+def preprocess_image(image):
+    transform = transforms.Compose([
+        transforms.Resize((IMG_SIZE, IMG_SIZE)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=NORM_MEAN, std=NORM_STD),
+    ])
+    return transform(image).unsqueeze(0)
 
 # ------------------------------------------------------------------------------
 # Grad-CAM Implementation
 # ------------------------------------------------------------------------------
 def generate_gradcam(model, input_tensor, target_class):
-    """Returns a Grad-CAM heatmap for a single image tensor"""
     gradients = []
     activations = []
 
@@ -60,8 +106,8 @@ def generate_gradcam(model, input_tensor, target_class):
         activations.append(output)
 
     layer = model.layer4[1].conv2
-    hook_handle_forward = layer.register_forward_hook(forward_hook)
-    hook_handle_backward = layer.register_backward_hook(backward_hook)
+    fwd_handle = layer.register_forward_hook(forward_hook)
+    bwd_handle = layer.register_backward_hook(backward_hook)
 
     output = model(input_tensor)
     model.zero_grad()
@@ -76,51 +122,96 @@ def generate_gradcam(model, input_tensor, target_class):
     for i, w in enumerate(weights):
         cam += w * acts[i, :, :]
     cam = np.maximum(cam, 0)
-    cam = cv2.resize(cam, (224, 224))
+    cam = cv2.resize(cam, (IMG_SIZE, IMG_SIZE))
     cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)
 
-    hook_handle_forward.remove()
-    hook_handle_backward.remove()
+    fwd_handle.remove()
+    bwd_handle.remove()
 
     return cam
 
-# ------------------------------------------------------------------------------
-# Overlay Grad-CAM heatmap on image
-# ------------------------------------------------------------------------------
 def overlay_cam_on_image(img, cam):
-    img = np.array(img.resize((224, 224)))
+    img = np.array(img.resize((IMG_SIZE, IMG_SIZE)))
     heatmap = cv2.applyColorMap(np.uint8(255 * cam), cv2.COLORMAP_JET)
     heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
     overlay = cv2.addWeighted(img, 0.6, heatmap, 0.4, 0)
     return overlay
 
 # ------------------------------------------------------------------------------
-# Streamlit UI
+# Prediction Function
 # ------------------------------------------------------------------------------
-st.title("CliniScan: Lung-Abnormality Classification on Chest X-rays using ResNet-18")
-st.write("Upload a Chest X-ray image to classify it as **Normal** or **Abnormal**")
-
-uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
-
-if uploaded_file:
-    image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Uploaded Image", use_column_width=True)
-
-    input_tensor = transform(image).unsqueeze(0)
-
+def predict(model, image):
+    input_tensor = preprocess_image(image)
     with torch.no_grad():
         outputs = model(input_tensor)
         probs = torch.softmax(outputs, dim=1)[0]
         pred_class = torch.argmax(probs).item()
+    return probs, pred_class
 
-    class_names = ["abnormal", "normal"]
-    st.write(f"### Prediction: **{class_names[pred_class].upper()}**")
-    st.write(f"Confidence: {probs[pred_class].item() * 100:.2f}%")
+# ------------------------------------------------------------------------------
+# Main Interface
+# ------------------------------------------------------------------------------
+st.markdown("## CliniScan: Lung-Abnormality Classification ")
+st.write("Upload a Chest X-ray image to classify it as **Normal** or **Abnormal**.")
 
-    st.bar_chart({class_names[i]: probs[i].item() for i in range(len(class_names))})
+uploaded_file = st.file_uploader("Upload an image file", type=["jpg", "jpeg", "png"])
 
-    # Grad-CAM visualization
-    cam = generate_gradcam(model, input_tensor, pred_class)
+if uploaded_file is not None:
+    image = Image.open(uploaded_file).convert("RGB")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Uploaded X-ray")
+        st.image(image, use_container_width=True)
+
+    with col2:
+        st.subheader("Prediction Results")
+        probs, pred_class = predict(model, image)
+        confidence = probs[pred_class].item()
+
+        if confidence >= confidence_threshold:
+            st.success(f"Prediction: **{CLASS_NAMES[pred_class]}**")
+        else:
+            st.warning(f"Low confidence prediction: **{CLASS_NAMES[pred_class]}**")
+
+        st.markdown(f"**Confidence:** {confidence * 100:.2f}%")
+
+        # Prepare DataFrame for Plotly bar chart
+        prob_df = pd.DataFrame({
+            "Class": CLASS_NAMES,
+            "Confidence": probs.numpy()
+        }).sort_values("Confidence", ascending=True)
+
+        # Plotly horizontal bar chart
+        fig = go.Figure(go.Bar(
+            x=prob_df["Confidence"],
+            y=prob_df["Class"],
+            orientation='h',
+            marker=dict(
+                color=prob_df["Confidence"],
+                colorscale='YlGnBu',
+                line=dict(color='rgba(0,0,0,0.6)', width=1)
+            ),
+            hovertemplate='<b>%{y}</b><br>Confidence: %{x:.3f}<extra></extra>'
+        ))
+
+        fig.update_layout(
+            title="Class Probabilities",
+            xaxis_title="Confidence",
+            yaxis_title="Class",
+            template="plotly_white",
+            height=400,
+            margin=dict(l=150, r=40, t=60, b=40),
+            font=dict(family="Helvetica", size=12, color="#212529"),
+            xaxis=dict(gridcolor='rgba(0,0,0,0.1)', zerolinecolor='rgba(0,0,0,0.2)'),
+            yaxis=dict(gridcolor='rgba(0,0,0,0.1)')
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Grad-CAM Visualization
+    st.markdown("---")
+    st.subheader("Grad-CAM Heatmap")
+    cam = generate_gradcam(model, preprocess_image(image), pred_class)
     overlay = overlay_cam_on_image(image, cam)
-
-    st.image(overlay, caption="Grad-CAM Heatmap Overlay", use_column_width=True)
+    st.image(overlay, caption="Grad-CAM Visualization", use_container_width=True)
