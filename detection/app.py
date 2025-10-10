@@ -129,8 +129,6 @@ if uploaded_file:
             height=500,
             margin=dict(l=100, r=40, t=60, b=40),
             font=dict(family="Helvetica", size=12, color="#212529"),
-            plot_bgcolor="#F0F2F6",
-            paper_bgcolor="#FFFFFF",
             xaxis=dict(
                 gridcolor='rgba(0,0,0,0.1)',
                 zerolinecolor='rgba(0,0,0,0.2)'
