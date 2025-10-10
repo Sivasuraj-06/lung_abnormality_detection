@@ -374,9 +374,8 @@ def predict(model, image):
 # Main Interface
 # ------------------------------------------------------------------------------
 st.markdown("## CliniScan: Lung-Abnormality Classification on Chest X-rays")
-st.write("Upload a Chest X-ray image to classify it as **Normal** or **Abnormal**.")
 
-uploaded_file = st.file_uploader("Upload an image file", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Upload a Chest X-ray image to classify it as **Normal** or **Abnormal**.", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
