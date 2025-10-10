@@ -48,7 +48,7 @@ idx_to_class = {
 # Page Setup
 # ------------------------------------------------------------------------------
 st.set_page_config(
-    page_title="CliniScan: Lung-Abnormality Classification",
+    page_title="CliniScan",
     layout="centered",
     initial_sidebar_state="auto"
 )
