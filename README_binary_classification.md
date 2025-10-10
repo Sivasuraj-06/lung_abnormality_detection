@@ -90,9 +90,14 @@ Open your browser at:  http://localhost:8501
 
 
 **Snapshots of the Application**
-![CliniScan-RN18_page-0001](https://github.com/user-attachments/assets/b2824ec2-3842-44ea-8b2d-3402f5d25fb6)
+![CliniScan-RN18_1_page-0001](https://github.com/user-attachments/assets/b1e291c8-62d3-49d5-bf6b-d92c9a5e5393)
 
-![CliniScan-RN18_page-0002](https://github.com/user-attachments/assets/379b5ffb-7f08-43aa-bbb4-9f104b201d92)
+![CliniScan-RN18_1_page-0002](https://github.com/user-attachments/assets/17cdf3b9-e299-4810-8489-e8ef03e3a70f)
+
+![CliniScan-RN18_1_page-0003](https://github.com/user-attachments/assets/c90f5f80-9132-4596-b95d-3c02b2a4dcc3)
+
+
+
 
 
 
