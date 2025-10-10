@@ -53,6 +53,7 @@ with st.sidebar:
 
     Model: ResNet-18  
     
+    
     Framework: PyTorch  
     """)
     st.markdown("---")
