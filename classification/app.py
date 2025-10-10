@@ -64,8 +64,11 @@ with st.sidebar:
     st.markdown("#### About the Model")
     st.info("""
     This application uses an EfficientNet-B0 classification model trained to identify 14 types of lung abnormalities from chest X-ray images.
+    
 
     Model architecture: EfficientNet-B0  
+
+    
     Framework: PyTorch  
     """)
     st.markdown("---")
