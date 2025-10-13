@@ -40,7 +40,7 @@ The goal is to **classify** an entire CXR image to determine the **presence or a
 
 You can test the unified AI tool directly in your browser. The application hosts both the YOLOv8 Detection model and the ResNet Classification model.
 
-**Application Link:** **[INSERT LIVE APP LINK HERE (e.g., Streamlit Share URL or HF Spaces URL)]**
+**Application Link:** **[https://4i88wodzyet7lwnxewfw9a.streamlit.app]**
 
 ---
 
