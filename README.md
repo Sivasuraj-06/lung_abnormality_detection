@@ -36,7 +36,7 @@ The goal is to **classify** an entire CXR image to determine the **presence or a
 
 ---
 
-## 🚀 Live Demo
+##  Live Demo
 
 You can test the unified AI tool directly in your browser. The application hosts both the YOLOv8 Detection model and the ResNet Classification model.
 
