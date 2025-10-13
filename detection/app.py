@@ -13,7 +13,11 @@ import pandas as pd
 # Configuration
 # ------------------------------------------------------------------------------
 MODEL_PATH = "best.pt"
+
+# Google Drive file ID
 DRIVE_ID = "1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc"
+
+# Direct download URL
 MODEL_URL = f"https://drive.google.com/uc?id={DRIVE_ID}"
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  
 LOGO_PATH = os.path.join(BASE_DIR, "assets", "logo.jpg")
