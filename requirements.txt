@@ -1,32 +1,41 @@
-# Core ML + DL
-torch
-torchvision
-torchaudio
+# ----------------------
+# Core ML + Deep Learning
+# ----------------------
+torch==2.1.0
+torchvision==0.16.0
+torchaudio==2.1.0
 
 # EfficientNet for classification
-efficientnet-pytorch
+efficientnet-pytorch==1.1.0
 
 # YOLOv8 for detection
-ultralytics
+ultralytics==8.1.0
 
-# Model serving (export & inference)
-onnx
-onnxruntime
-torch-tensorrt
-tensorflow   # if you want to try TF SavedModel export
+# Model serving / export / inference
+onnx==1.15.0
+onnxruntime==1.16.0
+torch-tensorrt==2.9.0+torch2.1  # Optional, GPU optimized
+tensorflow==2.15.0  # Optional if you want TF SavedModel export
 
+# ----------------------
 # Utilities
-pandas
-numpy
-pillow
-scikit-learn
+# ----------------------
+pandas==2.1.1
+numpy==1.26.0
+pillow==10.0.1
+scikit-learn==1.3.1
+protobuf==3.20.3  # Pin to avoid Streamlit descriptor error
+gdown==4.8.0
 
+# ----------------------
 # Visualization + Explainability
-matplotlib
-seaborn
-grad-cam
-plotly
+# ----------------------
+matplotlib==3.8.0
+seaborn==0.12.2
+grad-cam==1.4.6
+plotly==5.16.0
 
-# Deployment
-streamlit
-gdown
+# ----------------------
+# Deployment / Web App
+# ----------------------
+streamlit==1.25.0
