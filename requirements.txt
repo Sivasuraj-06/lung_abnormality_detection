@@ -1,10 +1,7 @@
-# ----------------------
-# Core ML + Deep Learning (CPU-only for Python 3.13)
-# ----------------------
-torch==2.10.1+cpu
-torchvision==0.18.1+cpu
-torchaudio==2.10.1+cpu
--f https://download.pytorch.org/whl/torch_stable.html
+# Core ML + Deep Learning
+torch==2.9.0
+torchvision==0.24.0
+torchaudio==2.9.0
 
 # EfficientNet for classification
 efficientnet-pytorch
@@ -17,25 +14,20 @@ onnx
 onnxruntime
 tensorflow
 
-# ----------------------
 # Utilities
-# ----------------------
 pandas
 numpy
 pillow
 scikit-learn
-protobuf==3.20.3  # pinned to avoid Streamlit errors
+protobuf==3.20.3
 gdown
 
-# ----------------------
 # Visualization / Explainability
-# ----------------------
 matplotlib
 seaborn
 grad-cam
 plotly
 
-# ----------------------
 # Deployment
-# ----------------------
 streamlit
+
