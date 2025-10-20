@@ -28,5 +28,6 @@ grad-cam
 plotly
 
 # Deployment
+protobuf==3.20.3
 streamlit
 gdown
