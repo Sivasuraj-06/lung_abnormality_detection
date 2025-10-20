@@ -15,16 +15,19 @@ import plotly.graph_objects as go
 # ------------------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------------------
+# Classification model
 CLASS_MODEL_PATH = "resnet50_multilabel_vinbigdata.pt"
 CLASS_DRIVE_ID = "1CG3_0OJe5hc2JyXsyerHc0DZcSTfKt1v"
 CLASS_MODEL_URL = f"https://drive.google.com/uc?id={CLASS_DRIVE_ID}"
 
+# Detection model
 DETECT_MODEL_PATH = "best.pt"
 DETECT_DRIVE_ID = "1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc"
 DETECT_MODEL_URL = f"https://drive.google.com/uc?id={DETECT_DRIVE_ID}"
 
-LOGO_PATH = "assets/logo.jpg"
+LOGO_PATH = "assets/logo.jpg"  # Replace with your actual logo path
 
+# Define the 14 class names
 classes = [
     "Aortic enlargement", "Atelectasis", "Calcification", "Cardiomegaly",
     "Consolidation", "ILD", "Infiltration", "Lung Opacity", "Nodule/Mass",
@@ -98,8 +101,11 @@ def load_classification_model():
 def load_detection_model():
     return YOLO(DETECT_MODEL_PATH)
 
-model_class, device = load_classification_model()
-model_detect = load_detection_model()
+# Load models
+if mode == "Classification":
+    model, device = load_classification_model()
+else:
+    model = load_detection_model()
 
 # ------------------------------------------------------------------------------
 # Image Transform for Classification
@@ -121,68 +127,62 @@ if uploaded_file:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Uploaded Image", use_container_width=True)
 
-    # -------------------- Run Detection First --------------------
-    with st.spinner("Running detection in background..."):
-        results = model_detect.predict(source=image, imgsz=640, conf=0.25)
-    res = results[0]
-
-    detected_classes = []
-    if hasattr(res, "boxes") and res.boxes is not None and len(res.boxes) > 0:
-        cls_list = res.boxes.cls.cpu().numpy()
-        conf_list = res.boxes.conf.cpu().numpy()
-        for cls_id, conf in zip(cls_list, conf_list):
-            if conf >= 0.25:
-                detected_classes.append((classes[int(cls_id)], float(conf)))
-
-    # -------------------- Classification Mode --------------------
     if mode == "Classification":
-        if len(detected_classes) == 0:
-            st.success("No abnormalities detected (Normal).")
+        # Multi-label classification
+        img_tensor = transform(image).unsqueeze(0).to(device)
+        with torch.no_grad():
+            outputs = torch.sigmoid(model(img_tensor)).cpu().numpy()[0]
+
+        preds = [(cls_name, float(conf)) for cls_name, conf in zip(classes, outputs) if conf >= confidence_threshold]
+
+        if preds:
+            st.subheader("Predicted Abnormalities")
+            preds_sorted = sorted(preds, key=lambda x: x[1], reverse=True)
+            df = pd.DataFrame(preds_sorted, columns=["Abnormality", "Confidence"])
+            st.table(df)
+
+            # Horizontal bar chart
+            fig = go.Figure(go.Bar(
+                x=df["Confidence"],
+                y=df["Abnormality"],
+                orientation='h',
+                marker=dict(color=df["Confidence"], colorscale='YlGnBu'),
+                hovertemplate='<b>%{y}</b><br>Confidence: %{x:.2f}<extra></extra>'
+            ))
+            fig.update_layout(title="Confidence Scores by Abnormality",
+                              xaxis_title="Confidence", yaxis_title="Abnormality",
+                              template="plotly_white", height=500)
+            st.plotly_chart(fig, use_container_width=True)
         else:
-            img_tensor = transform(image).unsqueeze(0).to(device)
-            with torch.no_grad():
-                outputs = torch.sigmoid(model_class(img_tensor)).cpu().numpy()[0]
-            class_preds = [(cls_name, float(conf)) for cls_name, conf in zip(classes, outputs) if conf >= confidence_threshold]
+            st.success("No abnormalities detected above the selected confidence threshold.")
 
-            # Merge detection classes
-            for det_cls, det_conf in detected_classes:
-                if det_cls not in [c[0] for c in class_preds]:
-                    class_preds.append((det_cls, det_conf))
-
-            if class_preds:
-                st.subheader("Predicted Abnormalities")
-                df = pd.DataFrame(sorted(class_preds, key=lambda x: x[1], reverse=True), columns=["Abnormality", "Confidence"])
-                st.table(df)
-
-                fig = go.Figure(go.Bar(
-                    x=df["Confidence"],
-                    y=df["Abnormality"],
-                    orientation='h',
-                    marker=dict(color=df["Confidence"], colorscale='YlGnBu'),
-                    hovertemplate='<b>%{y}</b><br>Confidence: %{x:.2f}<extra></extra>'
-                ))
-                fig.update_layout(title="Confidence Scores by Abnormality", xaxis_title="Confidence", yaxis_title="Abnormality", template="plotly_white", height=500)
-                st.plotly_chart(fig, use_container_width=True)
-
-    # -------------------- Detection Mode --------------------
     else:
+        # Object detection with YOLO
+        results = model.predict(image, imgsz=640, conf=confidence_threshold)
+        res = results[0]
         annotated = res.plot()
         st.image(annotated, caption="Detected Abnormalities", use_container_width=True)
 
-        if len(detected_classes) > 0:
+        if len(res.boxes) > 0:
             st.subheader("Detected Findings")
             det_summary = {}
-            for cls_name, conf in detected_classes:
-                det_summary[cls_name] = max(det_summary.get(cls_name, 0), conf)
-                st.write(f"- {cls_name} ({conf:.2f})")
+            for box in res.boxes:
+                cls_id = int(box.cls[0].item())
+                conf = float(box.conf[0].item())
+                if conf >= confidence_threshold:
+                    cls_name = classes[cls_id]
+                    det_summary[cls_name] = max(det_summary.get(cls_name, 0), conf)
+                    st.write(f"- {cls_name} ({conf:.2f})")
 
-            df = pd.DataFrame(sorted(det_summary.items(), key=lambda x: x[1], reverse=True), columns=["Abnormality", "Confidence"])
+            # Horizontal bar chart
+            sorted_detections = sorted(det_summary.items(), key=lambda x: x[1], reverse=True)
+            df = pd.DataFrame(sorted_detections, columns=["Abnormality", "Confidence"])
             fig = go.Figure(go.Bar(
                 x=df["Confidence"],
                 y=df["Abnormality"],
                 orientation='h',
                 marker=dict(color=df["Confidence"], colorscale='YlGnBu',
-                            line=dict(color='rgba(0,0,0,0.6)', width=1)),
+                            line=dict(color='rgba(0, 0, 0, 0.6)', width=1)),
                 hovertemplate='<b>%{y}</b><br>Confidence: %{x:.2f}<extra></extra>'
             ))
             fig.update_layout(
@@ -190,9 +190,12 @@ if uploaded_file:
                 xaxis_title="Confidence",
                 yaxis_title="Abnormality",
                 template="plotly_white",
-                height=500
+                height=500,
+                margin=dict(l=100, r=40, t=60, b=40),
+                font=dict(family="Helvetica", size=12, color="#212529"), 
+                xaxis=dict(gridcolor='rgba(0,0,0,0.1)', zerolinecolor='rgba(0,0,0,0.2)'),
+                yaxis=dict(gridcolor='rgba(0,0,0,0.1)')
             )
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.success("No abnormalities detected (Normal).")
-
+            st.success("No abnormalities detected above the selected confidence threshold.")
