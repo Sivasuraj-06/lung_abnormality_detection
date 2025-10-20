@@ -1,17 +1,15 @@
-# Core ML + Deep Learning
+# PyTorch CPU-only
 torch==2.9.0
 torchvision==0.24.0
 torchaudio==2.9.0
 
-# EfficientNet for classification
+# EfficientNet and YOLO
 efficientnet-pytorch
-
-# YOLOv8 for detection
 ultralytics
 
-# Model serving / export
-onnx
-onnxruntime
+# ONNX (prebuilt wheel)
+onnx==1.15.0
+onnxruntime==1.15.1
 tensorflow
 
 # Utilities
@@ -30,4 +28,3 @@ plotly
 
 # Deployment
 streamlit
-
