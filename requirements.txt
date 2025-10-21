@@ -1,8 +1,9 @@
-streamlit
-torch
-torchvision
-pandas
-ultralytics
-gdown
-plotly
-Pillow
+streamlit==1.37.1
+torch==2.3.1
+torchvision==0.18.1
+pandas==2.2.2
+Pillow==10.3.0
+ultralytics==8.2.97
+plotly==5.22.0
+tensorflow==2.16.1
+gdown==5.2.0
