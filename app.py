@@ -179,7 +179,7 @@ if uploaded_file:
     # -------------------- Step 3: Classification --------------------
     if mode == "Classification":
         if len(detected_classes) == 0:
-            st.success("No abnormalities detected (Normal).")
+            st.success("No abnormalities detected.")
         else:
             img_tensor = transform(image).unsqueeze(0).to(device)
             with torch.no_grad():
