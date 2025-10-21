@@ -194,5 +194,5 @@ if uploaded_file:
             )
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.success("No abnormalities detected (Normal).")
+            st.success("No abnormalities detected.")
 
