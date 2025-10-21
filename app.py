@@ -1,30 +1,31 @@
 # ==============================================================================
-# CliniScan: Lung-Abnormality Classification & Detection (ONNX Version)
+# CliniScan: Lung-Abnormality Classification & Detection
 # ==============================================================================
 import os
 import streamlit as st
-import onnxruntime as ort
-import numpy as np
+import torch
+import torch.nn as nn
+from torchvision import models, transforms
 from PIL import Image
 import pandas as pd
-import cv2
+from ultralytics import YOLO
 import gdown
 import plotly.graph_objects as go
-from torchvision import transforms
 
 # ------------------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------------------
-# ONNX Models
-CLASS_MODEL_PATH = "resnet50_multilabel_vinbigdata.onnx"
+# Classification model
+CLASS_MODEL_PATH = "resnet50_multilabel_vinbigdata.pt"
 CLASS_DRIVE_ID = "1CG3_0OJe5hc2JyXsyerHc0DZcSTfKt1v"
 CLASS_MODEL_URL = f"https://drive.google.com/uc?id={CLASS_DRIVE_ID}"
 
-DETECT_MODEL_PATH = "best.onnx"
+# Detection model
+DETECT_MODEL_PATH = "best.pt"
 DETECT_DRIVE_ID = "1Tt7-qfGC8509TGZTMIT_cWIovgVyRiyc"
 DETECT_MODEL_URL = f"https://drive.google.com/uc?id={DETECT_DRIVE_ID}"
 
-LOGO_PATH = "assets/logo.jpg"
+LOGO_PATH = "assets/logo.jpg"  # Replace with your actual logo path
 
 # Define the 14 class names
 classes = [
@@ -50,45 +51,61 @@ with st.sidebar:
     st.markdown("### Select Mode")
     mode = st.radio("Choose analysis type", ["Classification", "Detection"])
     st.markdown("---")
+    st.markdown("### Confidence Threshold")
     confidence_threshold = st.slider(
         "Select minimum confidence", 0.0, 1.0, 0.5 if mode=="Classification" else 0.25, 0.05
     )
     st.markdown("---")
     st.markdown("#### About the Model")
     if mode=="Classification":
-        st.info("ResNet50-based multi-label classifier for 14 lung abnormalities.")
+        st.info("""
+        This application uses a ResNet50-based multi-label classifier trained to identify multiple lung abnormalities from chest X-ray images.
+        """)
     else:
-        st.info("YOLOv8 detection model for 14 lung abnormalities.")
+        st.info("""
+        This application uses a YOLOv8 object detection model trained to identify 14 types of lung abnormalities from chest X-ray images.
+        Model architecture: YOLOv8n  
+        Framework: Ultralytics YOLO
+        """)
     st.markdown("---")
     st.markdown("#### Disclaimer")
-    st.warning("For educational/research purposes only. Not a substitute for professional medical advice.")
+    st.warning("""
+    For educational/research purposes only. Not a substitute for professional medical advice.
+    """)
 
 # ------------------------------------------------------------------------------
-# Download models if not present
+# Download model weights if not present
 # ------------------------------------------------------------------------------
 if not os.path.exists(CLASS_MODEL_PATH):
-    with st.spinner("Downloading classification model..."):
+    with st.spinner("Downloading classification model... Please wait"):
         gdown.download(CLASS_MODEL_URL, CLASS_MODEL_PATH, quiet=False)
 
 if not os.path.exists(DETECT_MODEL_PATH):
-    with st.spinner("Downloading detection model..."):
+    with st.spinner("Downloading detection model... Please wait"):
         gdown.download(DETECT_MODEL_URL, DETECT_MODEL_PATH, quiet=False)
 
 # ------------------------------------------------------------------------------
-# Load ONNX Models
+# Load Models
 # ------------------------------------------------------------------------------
 @st.cache_resource
 def load_classification_model():
-    return ort.InferenceSession(CLASS_MODEL_PATH)
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
+    model.fc = nn.Linear(model.fc.in_features, len(classes))
+    model.load_state_dict(torch.load(CLASS_MODEL_PATH, map_location=device))
+    model.to(device)
+    model.eval()
+    return model, device
 
 @st.cache_resource
 def load_detection_model():
-    return ort.InferenceSession(DETECT_MODEL_PATH)
+    return YOLO(DETECT_MODEL_PATH)
 
+# Load models
 if mode == "Classification":
-    ort_class_model = load_classification_model()
+    model, device = load_classification_model()
 else:
-    ort_det_model = load_detection_model()
+    model = load_detection_model()
 
 # ------------------------------------------------------------------------------
 # Image Transform for Classification
@@ -111,9 +128,11 @@ if uploaded_file:
     st.image(image, caption="Uploaded Image", use_container_width=True)
 
     if mode == "Classification":
-        # Multi-label classification (ONNX)
-        img_tensor = transform(image).unsqueeze(0).numpy()
-        outputs = ort_class_model.run(None, {"input": img_tensor})[0][0]
+        # Multi-label classification
+        img_tensor = transform(image).unsqueeze(0).to(device)
+        with torch.no_grad():
+            outputs = torch.sigmoid(model(img_tensor)).cpu().numpy()[0]
+
         preds = [(cls_name, float(conf)) for cls_name, conf in zip(classes, outputs) if conf >= confidence_threshold]
 
         if preds:
@@ -138,16 +157,45 @@ if uploaded_file:
             st.success("No abnormalities detected above the selected confidence threshold.")
 
     else:
-        # YOLO Detection (ONNX)
-        img_np = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-        img_input = img_np.astype(np.float32) / 255.0  # normalize
-        img_input = np.transpose(img_input, (2, 0, 1))[None, :, :, :]  # CHW + batch
-        outputs = ort_det_model.run(None, {"images": img_input})[0]
+        # Object detection with YOLO
+        results = model.predict(image, imgsz=640, conf=confidence_threshold)
+        res = results[0]
+        annotated = res.plot()
+        st.image(annotated, caption="Detected Abnormalities", use_container_width=True)
 
-        # You can implement YOLO postprocessing (boxes, scores, class IDs) here
-        # For simplicity, just showing placeholder
-        st.subheader("Detection results")
-        st.write("YOLO ONNX inference complete. You can implement postprocessing to extract boxes, scores, and labels.")
+        if len(res.boxes) > 0:
+            st.subheader("Detected Findings")
+            det_summary = {}
+            for box in res.boxes:
+                cls_id = int(box.cls[0].item())
+                conf = float(box.conf[0].item())
+                if conf >= confidence_threshold:
+                    cls_name = classes[cls_id]
+                    det_summary[cls_name] = max(det_summary.get(cls_name, 0), conf)
+                    st.write(f"- {cls_name} ({conf:.2f})")
 
-        # If you want, I can also provide a **full YOLOv8 ONNX postprocessing snippet** for Streamlit.
-
+            # Horizontal bar chart
+            sorted_detections = sorted(det_summary.items(), key=lambda x: x[1], reverse=True)
+            df = pd.DataFrame(sorted_detections, columns=["Abnormality", "Confidence"])
+            fig = go.Figure(go.Bar(
+                x=df["Confidence"],
+                y=df["Abnormality"],
+                orientation='h',
+                marker=dict(color=df["Confidence"], colorscale='YlGnBu',
+                            line=dict(color='rgba(0, 0, 0, 0.6)', width=1)),
+                hovertemplate='<b>%{y}</b><br>Confidence: %{x:.2f}<extra></extra>'
+            ))
+            fig.update_layout(
+                title="Confidence Scores by Abnormality",
+                xaxis_title="Confidence",
+                yaxis_title="Abnormality",
+                template="plotly_white",
+                height=500,
+                margin=dict(l=100, r=40, t=60, b=40),
+                font=dict(family="Helvetica", size=12, color="#212529"), 
+                xaxis=dict(gridcolor='rgba(0,0,0,0.1)', zerolinecolor='rgba(0,0,0,0.2)'),
+                yaxis=dict(gridcolor='rgba(0,0,0,0.1)')
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.success("No abnormalities detected above the selected confidence threshold.")
