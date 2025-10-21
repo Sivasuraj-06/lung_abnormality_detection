@@ -1,13 +1,32 @@
-streamlit==1.28.0
-torch==2.9.0+cpu
-torchvision==0.16.0+cpu
-torchaudio==2.0.2+cpu
-tensorflow==2.12.0
-numpy==1.25.2
-pandas==2.1.0
-opencv-python==4.8.1.78
-Pillow==10.0.1
-ultralytics==8.0.167
-plotly==5.17.0
-scikit-learn==1.3.1
-protobuf==3.20.3
+# Core ML + DL
+torch
+torchvision
+torchaudio
+
+# EfficientNet for classification
+efficientnet-pytorch
+
+# YOLOv8 for detection
+ultralytics
+
+# Model serving (export & inference)
+onnx
+onnxruntime
+torch-tensorrt
+tensorflow   # if you want to try TF SavedModel export
+
+# Utilities
+pandas
+numpy
+pillow
+scikit-learn
+
+# Visualization + Explainability
+matplotlib
+seaborn
+grad-cam
+plotly
+
+# Deployment
+streamlit
+gdown
