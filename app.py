@@ -157,11 +157,11 @@ if uploaded_file:
         valid = is_chest_xray(image, validator_model)
 
     if not valid:
-        st.error("❌ The uploaded image does not appear to be a chest X-ray.")
+        st.error("The uploaded image does not appear to be a chest X-ray.")
         st.warning("Please upload a valid chest X-ray image to continue.")
         st.stop()
     else:
-        st.success("✅ Image validated as Chest X-ray. Proceeding with analysis...")
+        st.success("Image validated as Chest X-ray. Proceeding with analysis...")
 
     # -------------------- Step 2: Detection --------------------
     with st.spinner("Running detection in background..."):
