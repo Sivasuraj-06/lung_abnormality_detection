@@ -1,8 +1,13 @@
 streamlit
 torch
 torchvision
+torchaudio
+tensorflow
+numpy
+pillow
+opencv-python
 pandas
 ultralytics
 gdown
 plotly
-Pillow
+
