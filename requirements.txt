@@ -10,4 +10,5 @@ pandas
 ultralytics
 gdown
 plotly
-
+pydicom
+io
